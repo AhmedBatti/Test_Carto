@@ -1,30 +1,23 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <link rel="stylesheet" href="css/leaflet.css">
-    <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
-    <link rel="stylesheet" href="css/qgis2web.css">
-    <link rel="stylesheet" href="css/fontawesome-all.min.css">
-    <link rel="stylesheet" href="css/leaflet-search.css">
-    <link rel="stylesheet" href="css/leaflet.photon.css">
-    <link rel="stylesheet" href="css/leaflet-measure.css">
-    <style>
-        html, body {
-            width: 100%;
-            height: 100%;
-            margin: 0;
-        }
-        #map {
-            width: 100%;
-            height: 100%;
-        }
-    </style>
-    <title>Carte QGIS + OSM</title>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="css/leaflet.css">
+<link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+<link rel="stylesheet" href="css/qgis2web.css">
+<link rel="stylesheet" href="css/fontawesome-all.min.css">
+<link rel="stylesheet" href="css/leaflet-search.css">
+<link rel="stylesheet" href="css/leaflet.photon.css">
+<link rel="stylesheet" href="css/leaflet-measure.css">
+<style>
+html, body { width:100%; height:100%; margin:0; }
+#map { width:100%; height:100%; }
+</style>
+<title>Carte QGIS + OSM</title>
 </head>
 <body>
 <div id="map"></div>
@@ -48,153 +41,104 @@
 <script src="data/Localite_reserve_Lefini2_3.js"></script>
 
 <script>
-
-// ----------------------
-// 1️⃣ Initialiser la carte et créer le pane OSM
-// ----------------------
+// ---------------------------
+// 1️⃣ Créer la carte
+// ---------------------------
 var map = L.map('map', {
-    zoomControl: false,
+    zoomControl: true,
     maxZoom: 28,
     minZoom: 1
 }).fitBounds([[-2.9697130610141493,15.336594752411493],[-2.322205108349378,16.28627308298649]]);
 
-// Pane OSM pour le fond
+// ---------------------------
+// 2️⃣ Ajouter le fond OSM
+// ---------------------------
 map.createPane('pane_OSM');
 map.getPane('pane_OSM').style.zIndex = 0;
 map.getPane('pane_OSM').style['mix-blend-mode'] = 'normal';
 
-// Ajouter OSM dans son pane
 var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
     attribution: '© OpenStreetMap contributors',
     pane: 'pane_OSM'
 }).addTo(map);
 
-// ----------------------
-// 2️⃣ Attribution et hash
-// ----------------------
+// ---------------------------
+// 3️⃣ Attribution et hash
+// ---------------------------
+map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="Leaflet">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
 var hash = new L.Hash(map);
-map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
 
-var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
-
-// ----------------------
-// 3️⃣ Fonctions popups, media, et suppression lignes vides
-// ----------------------
+// ---------------------------
+// 4️⃣ Fonctions popups & media
+// ---------------------------
 function removeEmptyRowsFromPopupContent(content, feature) {
-    var tempDiv = document.createElement('div');
-    tempDiv.innerHTML = content;
+    var tempDiv = document.createElement('div'); tempDiv.innerHTML = content;
     var rows = tempDiv.querySelectorAll('tr');
-    for (var i = 0; i < rows.length; i++) {
-        var td = rows[i].querySelector('td.visible-with-data');
-        var key = td ? td.id : '';
-        if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+    for (var i=0;i<rows.length;i++){
+        var td = rows[i].querySelector('td.visible-with-data'); 
+        var key = td?td.id:'';
+        if(td && td.classList.contains('visible-with-data') && feature.properties[key]==null){
             rows[i].parentNode.removeChild(rows[i]);
         }
     }
     return tempDiv.innerHTML;
 }
 
-function addClassToPopupIfMedia(content, popup) {
-    var tempDiv = document.createElement('div');
-    tempDiv.innerHTML = content;
+function addClassToPopupIfMedia(content,popup){
+    var tempDiv = document.createElement('div'); tempDiv.innerHTML = content;
     var imgTd = tempDiv.querySelector('td img');
-    if (imgTd) {
-        var src = imgTd.getAttribute('src');
-        if (/\.(jpg|jpeg|png|gif|bmp|webp|avif)$/i.test(src)) {
-            popup._contentNode.classList.add('media');
-            setTimeout(function() { popup.update(); }, 10);
-        }
-    } else {
-        popup._contentNode.classList.remove('media');
-    }
+    if(imgTd){ popup._contentNode.classList.add('media'); setTimeout(()=>popup.update(),10);}
+    else { popup._contentNode.classList.remove('media'); }
 }
 
-// ----------------------
-// 4️⃣ Ajouter tes couches QGIS vectorielles dans leurs panes respectifs
-// ----------------------
-// --- Occupation du sol ---
-map.createPane('pane_OccupationduSol_0');
-map.getPane('pane_OccupationduSol_0').style.zIndex = 400;
-map.getPane('pane_OccupationduSol_0').style['mix-blend-mode'] = 'normal';
+// ---------------------------
+// 5️⃣ Ajouter les couches vectorielles QGIS
+// ---------------------------
 
+// Occupation du sol
+map.createPane('pane_OccupationduSol_0'); map.getPane('pane_OccupationduSol_0').style.zIndex = 400;
 var layer_OccupationduSol_0 = new L.geoJson(json_OccupationduSol_0, {
-    attribution: '',
-    interactive: true,
-    dataVar: 'json_OccupationduSol_0',
-    layerName: 'layer_OccupationduSol_0',
-    pane: 'pane_OccupationduSol_0',
-    style: style_OccupationduSol_0_0,
-    onEachFeature: pop_OccupationduSol_0
+    pane:'pane_OccupationduSol_0', style: style_OccupationduSol_0_0, onEachFeature: pop_OccupationduSol_0
 }).addTo(map);
 
-// --- Hydrographie ---
-map.createPane('pane_Hydrographie_1');
-map.getPane('pane_Hydrographie_1').style.zIndex = 401;
-map.getPane('pane_Hydrographie_1').style['mix-blend-mode'] = 'normal';
-
+// Hydrographie
+map.createPane('pane_Hydrographie_1'); map.getPane('pane_Hydrographie_1').style.zIndex = 401;
 var layer_Hydrographie_1 = new L.geoJson(json_Hydrographie_1, {
-    attribution: '',
-    interactive: true,
-    dataVar: 'json_Hydrographie_1',
-    layerName: 'layer_Hydrographie_1',
-    pane: 'pane_Hydrographie_1',
-    style: style_Hydrographie_1_0,
-    onEachFeature: pop_Hydrographie_1
+    pane:'pane_Hydrographie_1', style: style_Hydrographie_1_0, onEachFeature: pop_Hydrographie_1
 }).addTo(map);
 
-// --- Routes ---
-map.createPane('pane_Routes_Lefini_2');
-map.getPane('pane_Routes_Lefini_2').style.zIndex = 402;
-map.getPane('pane_Routes_Lefini_2').style['mix-blend-mode'] = 'normal';
-
+// Routes
+map.createPane('pane_Routes_Lefini_2'); map.getPane('pane_Routes_Lefini_2').style.zIndex = 402;
 var layer_Routes_Lefini_2 = new L.geoJson(json_Routes_Lefini_2, {
-    attribution: '',
-    interactive: true,
-    dataVar: 'json_Routes_Lefini_2',
-    layerName: 'layer_Routes_Lefini_2',
-    pane: 'pane_Routes_Lefini_2',
-    style: style_Routes_Lefini_2_0,
-    onEachFeature: pop_Routes_Lefini_2
+    pane:'pane_Routes_Lefini_2', style: style_Routes_Lefini_2_0, onEachFeature: pop_Routes_Lefini_2
 }).addTo(map);
 
-// --- Villes / Localités ---
-map.createPane('pane_Localite_reserve_Lefini2_3');
-map.getPane('pane_Localite_reserve_Lefini2_3').style.zIndex = 403;
-map.getPane('pane_Localite_reserve_Lefini2_3').style['mix-blend-mode'] = 'normal';
-
+// Villes / Localités
+map.createPane('pane_Localite_reserve_Lefini2_3'); map.getPane('pane_Localite_reserve_Lefini2_3').style.zIndex = 403;
 var layer_Localite_reserve_Lefini2_3 = new L.geoJson(json_Localite_reserve_Lefini2_3, {
-    attribution: '',
-    interactive: true,
-    dataVar: 'json_Localite_reserve_Lefini2_3',
-    layerName: 'layer_Localite_reserve_Lefini2_3',
-    pane: 'pane_Localite_reserve_Lefini2_3',
-    onEachFeature: pop_Localite_reserve_Lefini2_3,
-    pointToLayer: function (feature, latlng) {
-        return L.circleMarker(latlng, style_Localite_reserve_Lefini2_3_0(feature));
-    }
+    pane:'pane_Localite_reserve_Lefini2_3', onEachFeature: pop_Localite_reserve_Lefini2_3,
+    pointToLayer: function(feature,latlng){return L.circleMarker(latlng, style_Localite_reserve_Lefini2_3_0(feature));}
 }).addTo(map);
 
-// ----------------------
-// 5️⃣ Ajouter contrôle des couches et baseMaps
-// ----------------------
-var baseMaps = {
-    "OpenStreetMap": osm
-};
-
+// ---------------------------
+// 6️⃣ Layers control
+// ---------------------------
+var baseMaps = { "OpenStreetMap": osm };
 var overlayMaps = {
     "Occupation du sol": layer_OccupationduSol_0,
-    "Routes": layer_Routes_Lefini_2,
     "Hydrographie": layer_Hydrographie_1,
+    "Routes": layer_Routes_Lefini_2,
     "Villes": layer_Localite_reserve_Lefini2_3
 };
 
 L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(map);
 
-// ----------------------
-// 6️⃣ Ajout autres plugins (search, mesure, hash, etc.)
-// ----------------------
-// ... ici tu peux garder tout le reste tel quel (Photon, L.Control.Measure, labels, etc.)
+// ---------------------------
+// 7️⃣ Ajouter contrôles supplémentaires
+// ---------------------------
+// Zoom déjà actif
+// Measure, Photon Search, Labels etc. restent inchangés
 
 </script>
 </body>
