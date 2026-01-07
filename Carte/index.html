@@ -53,17 +53,12 @@ html, body {
 var obj2 = {};
 var obj3 = {};
 
-			
-  //      var crs = new L.Proj.CRS('EPSG:3857', '+proj=merc +a=6378137 +b=6378137 +lat_ts=0 +lon_0=0 +x_0=0 +y_0=0 +k=1 +units=m +nadgrids=@null +wktext +no_defs', {
-   //         resolutions: [2800, 1400, 700, 350, 175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
-   //     });
-
 
 			
-        var map = L.map('map', {
-            zoomControl:false, 
-            maxZoom:28, 
-            minZoom:1
+var map = L.map('map', {
+            continuousWorld: false,
+            worldCopyJump: false, 
+            zoomControl:false, maxZoom:28, minZoom:1
         }).fitBounds([[-2.8124791344803683,15.528803778748062],[-2.488709695580104,16.093081559267052]]);
 
         // Fond de carte OSM
