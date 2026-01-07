@@ -1,143 +1,111 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-
-    <link rel="stylesheet" href="css/leaflet.css">
-    <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
-    <link rel="stylesheet" href="css/qgis2web.css">
-    <link rel="stylesheet" href="css/fontawesome-all.min.css">
-    <link rel="stylesheet" href="css/leaflet-search.css">
-    <link rel="stylesheet" href="css/leaflet.photon.css">
-    <link rel="stylesheet" href="css/leaflet-measure.css">
-
-    <style>
-        html, body { width: 100%; height: 100%; margin: 0; }
-        #map { width: 100%; height: 100%; }
-    </style>
-
-    <title>Carte QGIS + OSM</title>
+<meta charset="utf-8">
+<meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+<title>Test Carto</title>
+<link rel="stylesheet" href="css/leaflet.css">
+<link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+<link rel="stylesheet" href="css/qgis2web.css">
+<link rel="stylesheet" href="css/fontawesome-all.min.css">
+<style>
+html, body { width: 100%; height: 100%; margin: 0; }
+#map { width: 100%; height: 100%; }
+</style>
 </head>
 <body>
-    <div id="map"></div>
+<div id="map"></div>
 
-    <!-- Scripts nécessaires -->
-    <script src="js/leaflet.js"></script>
-    <script src="js/qgis2web_expressions.js"></script>
-    <script src="js/L.Control.Layers.Tree.min.js"></script>
-    <script src="js/leaflet.rotatedMarker.js"></script>
-    <script src="js/leaflet.pattern.js"></script>
-    <script src="js/leaflet-hash.js"></script>
-    <script src="js/Autolinker.min.js"></script>
-    <script src="js/rbush.min.js"></script>
-    <script src="js/labelgun.min.js"></script>
-    <script src="js/labels.js"></script>
-    <script src="js/leaflet.photon.js"></script>
-    <script src="js/leaflet-measure.js"></script>
-    
-    <!-- Données GeoJSON -->
-    <script src="data/OccupationduSol_0.js"></script>
-    <script src="data/Hydrographie_1.js"></script>
-    <script src="data/Routes_Lefini_2.js"></script>
-    <script src="data/Localite_reserve_Lefini2_3.js"></script>
+<script src="js/leaflet.js"></script>
+<script src="js/L.Control.Layers.Tree.min.js"></script>
+<script src="js/leaflet.rotatedMarker.js"></script>
+<script src="js/leaflet.pattern.js"></script>
+<script src="js/leaflet-hash.js"></script>
 
-    <script>
-        // 1. Créer la carte
-        var map = L.map('map', {
-            zoomControl: true,   // Activer zoom + et -
-            minZoom: 1,
-            maxZoom: 28
-        });
+<!-- Vos données GeoJSON -->
+<script src="data/OccupationduSol_0.js"></script>
+<script src="data/Hydrographie_1.js"></script>
+<script src="data/Routes_Lefini_2.js"></script>
+<script src="data/Localite_reserve_Lefini2_3.js"></script>
 
-        // 2. Ajouter OSM en fond (z-index très bas pour rester derrière)
-        var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-            maxZoom: 19
-        }).addTo(map);
+<script>
+/* ------------------------ */
+/* 1. Créer la carte       */
+/* ------------------------ */
+var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap contributors'
+});
 
-        // 3. Définir un objet pour les couches de base et overlays
-        var baseMaps = { "OpenStreetMap": osm };
-        var overlayMaps = {};
+var map = L.map('map', {
+    zoomControl: true,
+    layers: [osm]
+}).fitBounds([[-2.9697130610141493,15.336594752411493],[-2.322205108349378,16.28627308298649]]);
 
-        // 4. Créer les panes GeoJSON avec z-index progressif
-        function createPane(name, zIndex) {
-            map.createPane(name);
-            map.getPane(name).style.zIndex = zIndex;
-            map.getPane(name).style['mix-blend-mode'] = 'normal';
-        }
+/* ------------------------ */
+/* 2. Créer les panes       */
+/* ------------------------ */
+var panes = [
+    {name: 'OccupationduSol_0', z: 400},
+    {name: 'Hydrographie_1', z: 401},
+    {name: 'Routes_Lefini_2', z: 402},
+    {name: 'Localite_reserve_Lefini2_3', z: 403}
+];
+panes.forEach(function(p){
+    map.createPane(p.name);
+    map.getPane(p.name).style.zIndex = p.z;
+    map.getPane(p.name).style['mix-blend-mode'] = 'normal';
+});
 
-        createPane('pane_OccupationduSol_0', 400);
-        createPane('pane_Hydrographie_1', 401);
-        createPane('pane_Routes_Lefini_2', 402);
-        createPane('pane_Localite_reserve_Lefini2_3', 403);
+/* ------------------------ */
+/* 3. Ajouter les couches   */
+/* ------------------------ */
+var layer_OccupationduSol_0 = L.geoJson(json_OccupationduSol_0, {
+    pane: 'OccupationduSol_0',
+    style: function(feature){ /* Simplifié ici, vous pouvez remettre vos styles */ return {color:'green', fillOpacity:0.7, weight:1}; },
+    onEachFeature: function(feature, layer){ layer.bindPopup(feature.properties.Type || ""); }
+}).addTo(map);
 
-        // 5. Fonctions de style et popup pour chaque couche
-        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+var layer_Hydrographie_1 = L.geoJson(json_Hydrographie_1, {
+    pane: 'Hydrographie_1',
+    style: function(feature){ return {color:'blue', weight:2}; },
+    onEachFeature: function(feature, layer){ layer.bindPopup(feature.properties.Type || ""); }
+}).addTo(map);
 
-        function pop_OccupationduSol_0(feature, layer) {
-            var content = '<table><tr><td colspan="2">' + (feature.properties['Type'] || '') + '</td></tr></table>';
-            layer.bindPopup(content);
-        }
-        function style_OccupationduSol_0_0(feature) {
-            switch(String(feature.properties['Type'])) {
-                case 'Forêt dense': return {color:'rgba(97,133,83,1.0)', fillColor:'rgba(97,133,83,1.0)', weight:1, fillOpacity:1};
-                case 'Forêt claire': return {color:'rgba(156,194,59,1.0)', fillColor:'rgba(156,194,59,1.0)', weight:1, fillOpacity:1};
-                case 'Savane arborée dense': return {color:'rgba(177,102,33,1.0)', fillColor:'rgba(177,102,33,1.0)', weight:1, fillOpacity:1};
-                case 'Savane arborée de moyenne densité': return {color:'rgba(208,116,30,1.0)', fillColor:'rgba(208,116,30,1.0)', weight:1, fillOpacity:1};
-                case 'Savane arborée de faible densité': return {color:'rgba(239,127,22,1.0)', fillColor:'rgba(239,127,22,1.0)', weight:1, fillOpacity:1};
-                case 'Savane herbeuse ou arbustive, dense': return {color:'rgba(255,154,59,1.0)', fillColor:'rgba(255,154,59,1.0)', weight:1, fillOpacity:1};
-                case 'Savane herbeuse ou arbustive': return {color:'rgba(249,198,150,1.0)', fillColor:'rgba(249,198,150,1.0)', weight:1, fillOpacity:1};
-                case 'Mosaïque Savane herbeuse ou arbustive et champs': return {color:'rgba(233,173,222,1.0)', fillColor:'rgba(233,173,222,1.0)', weight:1, fillOpacity:1};
-            }
-        }
+var layer_Routes_Lefini_2 = L.geoJson(json_Routes_Lefini_2, {
+    pane: 'Routes_Lefini_2',
+    style: function(feature){ return {color:'red', weight:2}; },
+    onEachFeature: function(feature, layer){ layer.bindPopup(feature.properties.Nom || ""); }
+}).addTo(map);
 
-        // 6. Ajouter les couches GeoJSON
-        var layer_OccupationduSol_0 = L.geoJson(json_OccupationduSol_0, {
-            pane: 'pane_OccupationduSol_0',
-            style: style_OccupationduSol_0_0,
-            onEachFeature: pop_OccupationduSol_0
-        }).addTo(map); overlayMaps["Occupation du sol"] = layer_OccupationduSol_0;
+var layer_Localite_reserve_Lefini2_3 = L.geoJson(json_Localite_reserve_Lefini2_3, {
+    pane: 'Localite_reserve_Lefini2_3',
+    pointToLayer: function(feature, latlng){ return L.circleMarker(latlng, {radius:4, fillColor:'black', color:'black', weight:1, fillOpacity:1}); },
+    onEachFeature: function(feature, layer){ layer.bindPopup(feature.properties.Toponyme || ""); }
+}).addTo(map);
 
-        var layer_Hydrographie_1 = L.geoJson(json_Hydrographie_1, {
-            pane: 'pane_Hydrographie_1',
-            style: function(f){ return {color:'blue', weight:1}; },
-            onEachFeature: function(f,l){ l.bindPopup(f.properties.Type || ''); }
-        }).addTo(map); overlayMaps["Hydrographie"] = layer_Hydrographie_1;
+/* ------------------------ */
+/* 4. Contrôle des couches  */
+/* ------------------------ */
+var baseMaps = { "OpenStreetMap": osm };
+var overlayMaps = {
+    "Occupation du sol": layer_OccupationduSol_0,
+    "Hydrographie": layer_Hydrographie_1,
+    "Routes": layer_Routes_Lefini_2,
+    "Villes": layer_Localite_reserve_Lefini2_3
+};
+L.control.layers(baseMaps, overlayMaps, {collapsed: false}).addTo(map);
 
-        var layer_Routes_Lefini_2 = L.geoJson(json_Routes_Lefini_2, {
-            pane: 'pane_Routes_Lefini_2',
-            style: function(f){ return {color:'red', weight:2}; },
-            onEachFeature: function(f,l){ l.bindPopup(f.properties.Nom || ''); }
-        }).addTo(map); overlayMaps["Routes"] = layer_Routes_Lefini_2;
-
-        var layer_Localite_reserve_Lefini2_3 = L.geoJson(json_Localite_reserve_Lefini2_3, {
-            pane: 'pane_Localite_reserve_Lefini2_3',
-            pointToLayer: function(f,latlng){ return L.circleMarker(latlng, {radius:4, color:'black', fillColor:'black', fillOpacity:1}); },
-            onEachFeature: function(f,l){ l.bindPopup(f.properties.Toponyme || ''); }
-        }).addTo(map); overlayMaps["Villes"] = layer_Localite_reserve_Lefini2_3;
-
-        // 7. Ajuster la vue sur les couches
-        var bounds_group = L.featureGroup([layer_OccupationduSol_0, layer_Hydrographie_1, layer_Routes_Lefini_2, layer_Localite_reserve_Lefini2_3]);
-        map.fitBounds(bounds_group.getBounds());
-
-        // 8. Ajouter le Layer Tree et contrôles
-        L.control.layers(baseMaps, overlayMaps, {collapsed:false}).addTo(map);
-
-        // 9. Ajouter le hash URL pour navigation
-        var hash = new L.Hash(map);
-
-        // 10. Ajouter mesure et contrôle zoom
-        L.control.zoom({position:'topleft'}).addTo(map);
-        var measureControl = new L.Control.Measure({
-            position:'topleft',
-            primaryLengthUnit:'meters',
-            secondaryLengthUnit:'kilometers'
-        });
-        measureControl.addTo(map);
-    </script>
+/* ------------------------ */
+/* 5. Légende simple        */
+/* ------------------------ */
+var legend = L.control({position: 'bottomright'});
+legend.onAdd = function (map) {
+    var div = L.DomUtil.create('div', 'info legend');
+    div.innerHTML = "<b>Légende</b><br>Occupation du sol: vert<br>Hydrographie: bleu<br>Routes: rouge<br>Villes: noir";
+    return div;
+};
+legend.addTo(map);
+</script>
 </body>
 </html>
