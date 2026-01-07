@@ -68,7 +68,20 @@ html, body {
          }
          return tempDiv.innerHTML;
         }
-        // modify popup if contains media
+       // inserer OSM
+			var osm = L.tileLayer(
+  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap contributors'
+  }
+);
+
+osm.addTo(map);
+
+			
+			
+			// modify popup if contains media
         function addClassToPopupIfMedia(content, popup) {
             var tempDiv = document.createElement('div');
             tempDiv.innerHTML = content;
