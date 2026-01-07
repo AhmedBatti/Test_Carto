@@ -620,7 +620,12 @@ html, body {
                 last.style.display = "none";
             }
         });
-        var overlaysTree = [
+        // 1. Définir les fonds de carte
+        var baseMaps = {
+            "OpenStreetMap": layer_OSM
+        };
+			
+			var overlaysTree = [
             {label: 'Localité<br /><table><tr><td style="text-align: center;"><img src="legend/Localit_3_Cheflieudedistrict0.png" /></td><td>Chef-lieu de district</td></tr><tr><td style="text-align: center;"><img src="legend/Localit_3_Autrelocalité1.png" /></td><td>Autre localité</td></tr></table>', layer: layer_Localit_3},
             {label: 'Route<br /><table><tr><td style="text-align: center;"><img src="legend/Route_2_Routepubliqueprincipale0.png" /></td><td>Route publique principale</td></tr><tr><td style="text-align: center;"><img src="legend/Route_2_PistePrincipale1.png" /></td><td>Piste Principale</td></tr><tr><td style="text-align: center;"><img src="legend/Route_2_Piste2.png" /></td><td>Piste</td></tr></table>', layer: layer_Route_2},
             {label: 'Hydrographie<br /><table><tr><td style="text-align: center;"><img src="legend/Hydrographie_1_Coursdeauprincipal0.png" /></td><td>Cours d\'eau principal</td></tr><tr><td style="text-align: center;"><img src="legend/Hydrographie_1_Coursdeausecondaire1.png" /></td><td>Cours d\'eau secondaire</td></tr></table>', layer: layer_Hydrographie_1},
