@@ -61,10 +61,12 @@ html, body {
         }).fitBounds([[-2.8124791344803683,15.528803778748062],[-2.488709695580104,16.093081559267052]]);
 
 // --- AJOUT DU FOND DE CARTE OSM ---
-        var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+// Fond OSM avec Z-index forcé au minimum
+        var layer_OSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors',
             minZoom: 1,
-            maxZoom: 28
+            maxZoom: 28,
+            pane: 'tilePane' // Force le rendu en arrière-plan
         }).addTo(map);
         // --- FIN DE L'AJOUT ---
 
