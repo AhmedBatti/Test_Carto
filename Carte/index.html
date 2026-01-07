@@ -48,8 +48,18 @@ html, body {
         <script src="data/Routes_Lefini_2.js"></script>
         <script src="data/Localite_reserve_Lefini2_3.js"></script>
         <script>
-        var map = L.map('map', {
+       
+		// Ajouter OpenStreetMap comme fond
+var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap contributors'
+});	
+			
+			
+			
+			var map = L.map('map', {
             zoomControl:false, maxZoom:28, minZoom:1
+			layers: [osm]  // <-- OSM actif dès le départ	
         }).fitBounds([[-2.9697130610141493,15.336594752411493],[-2.322205108349378,16.28627308298649]]);
         var hash = new L.Hash(map);
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
