@@ -68,7 +68,8 @@ var obj3 = {};
         var layer_OSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors',
             minZoom: 1,
-            maxZoom: 28
+            maxZoom: 28,
+			zIndex: 0
         }).addTo(map);
 
         var hash = new L.Hash(map);
