@@ -69,15 +69,19 @@ html, body {
          return tempDiv.innerHTML;
         }
        // inserer OSM
-			var osm = L.tileLayer(
-  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-  {
-    maxZoom: 19,
-    attribution: '© OpenStreetMap contributors'
-  }
-);
+	var baseMaps = {
+  "OpenStreetMap": osm
+};
 
-osm.addTo(map);
+var overlayMaps = {
+  "Occupation du sol": layer_OccupationduSol_0,
+  "Routes": layer_Routes_2,
+  "Hydrographie": layer_Hydrographie_1,
+  "Villes": layer_Localite_reserve_Lefini2_3
+};
+
+L.control.layers(baseMaps, overlayMaps, { collapsed: false }).addTo(map);
+
 
 			
 			
