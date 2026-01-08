@@ -167,8 +167,7 @@ var layer_Satellite = L.tileLayer(
         }
         function pop_OccupationduSol_0(feature, layer) {
             var popupContent = '<table>\
-                 
-                   <tr>\
+                    <tr>\
                         <td colspan="2">' + (feature.properties['Id'] !== null ? autolinker.link(String(feature.properties['Id']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
                     <tr>\
@@ -190,7 +189,6 @@ var layer_Satellite = L.tileLayer(
                     <tr>\
                         <td colspan="2">' + (feature.properties['Aptitude'] !== null ? autolinker.link(String(feature.properties['Aptitude']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
-                  
                 </table>';
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
 			layer.on('popupopen', function(e) {
