@@ -62,21 +62,24 @@ var map = L.map('map', {
         }).fitBounds([[-2.8124791344803683,15.528803778748062],[-2.488709695580104,16.093081559267052]]);
 
         // Fond de carte OSM
-        var layer_OSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-            minZoom: 1,
-            maxZoom: 28,
-            zIndex: 0
-        }).addTo(map);
+var layer_OSM = L.tileLayer(
+  'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  {
+    attribution: '© OpenStreetMap contributors',
+    minZoom: 1,
+    maxZoom: 28
+  }
+);
 
 // Fond de carte Satellite (ESRI)
 var layer_Satellite = L.tileLayer(
-  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+  'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  {
     attribution: '© Esri, Maxar, Earthstar Geographics',
     minZoom: 1,
-    maxZoom: 28,
-    zIndex: 0
-});
+    maxZoom: 28
+  }
+);
 			
         var hash = new L.Hash(map);
         // --- FIN DE L'AJOUT ---
@@ -633,15 +636,16 @@ var layer_Satellite = L.tileLayer(
                 last.style.display = "none";
             }
         });
-// 1. On laisse les fonds de carte vides pour éviter le bouton radio bloqué
+
 var baseMaps = {
     "OpenStreetMap": layer_OSM,
     "Satellite (ESRI)": layer_Satellite
 };
+
+layer_OSM.addTo(map);
 			
         var overlaysTree = [
-            // On ajoute OSM ici au sommet de la liste avec sa case à cocher
-           
+          
             
             {label: 'Localité<br /><table><tr><td style="text-align: center;"><img src="legend/Localit_3_Cheflieudedistrict0.png" /></td><td>Chef-lieu de district</td></tr><tr><td style="text-align: center;"><img src="legend/Localit_3_Autrelocalité1.png" /></td><td>Autre localité</td></tr></table>', layer: layer_Localit_3},
             {label: 'Route<br /><table><tr><td style="text-align: center;"><img src="legend/Route_2_Routepubliqueprincipale0.png" /></td><td>Route publique principale</td></tr><tr><td style="text-align: center;"><img src="legend/Route_2_PistePrincipale1.png" /></td><td>Piste Principale</td></tr><tr><td style="text-align: center;"><img src="legend/Route_2_Piste2.png" /></td><td>Piste</td></tr></table>', layer: layer_Route_2},
