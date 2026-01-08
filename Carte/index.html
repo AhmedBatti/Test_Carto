@@ -637,10 +637,15 @@ var layer_Satellite = L.tileLayer(
             }
         });
 
-var baseMaps = {
-    "OpenStreetMap": layer_OSM,
-    "Satellite (ESRI)": layer_Satellite
-};
+var baseTree = [
+  {
+    label: "🗺️ Fonds de carte",
+    children: [
+      { label: "OpenStreetMap", layer: layer_OSM },
+      { label: "Satellite (ESRI)", layer: layer_Satellite }
+    ]
+  }
+];
 
 layer_OSM.addTo(map);
 			
@@ -653,9 +658,9 @@ layer_OSM.addTo(map);
             {label: 'Occupation du Sol<br /><table><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_Forêtdense0.png" /></td><td>Forêt dense</td></tr><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_Forêtclaire1.png" /></td><td>Forêt claire</td></tr><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_Savanearboréedense2.png" /></td><td>Savane arborée dense</td></tr><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_Savanearboréedemoyennedensité3.png" /></td><td>Savane arborée de moyenne densité</td></tr><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_Savanearboréedefaibledensité4.png" /></td><td>Savane arborée de faible densité</td></tr><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_Savaneherbeuseouarbustivedense5.png" /></td><td>Savane herbeuse ou arbustive, dense</td></tr><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_Savaneherbeuseouarbustive6.png" /></td><td>Savane herbeuse ou arbustive</td></tr><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_MosaïqueSavaneherbeuseouarbustiveetchamps7.png" /></td><td>Mosaïque Savane herbeuse ou arbustive et champs</td></tr></table>', layer: layer_OccupationduSol_0},
         ];
 
-        var lay = L.control.layers.tree(baseMaps, overlaysTree, {
-            collapsed: false, 
-        });
+var lay = L.control.layers.tree(baseTree, overlaysTree, {
+    collapsed: false,
+});
         lay.addTo(map);
 		document.addEventListener("DOMContentLoaded", function() {
             // set new Layers List height which considers toggle icon
