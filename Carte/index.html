@@ -640,6 +640,7 @@ var layer_Satellite = L.tileLayer(
 var baseTree = [
   {
     label: "🗺️ Fonds de carte",
+    exclusive: true,   // ⭐ LIGNE CRUCIALE
     children: [
       { label: "OpenStreetMap", layer: layer_OSM },
       { label: "Satellite (ESRI)", layer: layer_Satellite }
