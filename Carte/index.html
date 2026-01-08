@@ -167,28 +167,12 @@ var layer_Satellite = L.tileLayer(
         }
         function pop_OccupationduSol_0(feature, layer) {
             var popupContent = '<table>\
-          //          <tr>\
-          //              <td colspan="2">' + (feature.properties['Id'] !== null ? autolinker.link(String(feature.properties['Id']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-          //          </tr>\
+                 
                     <tr>\
                         <th scope="row">Type</th>\
                         <td>' + (feature.properties['Type'] !== null ? autolinker.link(String(feature.properties['Type']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
                     </tr>\
-          //          <tr>\
-          //              <td colspan="2">' + (feature.properties['ha'] !== null ? autolinker.link(String(feature.properties['ha']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-           //         </tr>\
-         //           <tr>\
-          //              <td colspan="2">' + (feature.properties['Pente'] !== null ? autolinker.link(String(feature.properties['Pente']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-         //           </tr>\
-         //           <tr>\
-         //               <td colspan="2">' + (feature.properties['Classe'] !== null ? autolinker.link(String(feature.properties['Classe']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-        //            </tr>\
-         //           <tr>\
-          //              <td colspan="2">' + (feature.properties['Plantable'] !== null ? autolinker.link(String(feature.properties['Plantable']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-           //         </tr>\
-           //         <tr>\
-          //              <td colspan="2">' + (feature.properties['Aptitude'] !== null ? autolinker.link(String(feature.properties['Aptitude']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
-           //         </tr>\
+                  
                 </table>';
             var content = removeEmptyRowsFromPopupContent(popupContent, feature);
 			layer.on('popupopen', function(e) {
