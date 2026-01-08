@@ -57,26 +57,25 @@ html, body {
         map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
         var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
         
-        // --- DÉBUT MODIFICATION : AJOUT ESRI ---
+        // --- AJOUT SATELLITE ---
         var layer_OSM = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             opacity: 1.0,
-            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors, CC-BY-SA</a>',
+            attribution: '',
             minZoom: 1,
             maxZoom: 28,
             minNativeZoom: 0,
             maxNativeZoom: 19
-        });
-        layer_OSM.addTo(map);
+        }).addTo(map);
 
         var layer_Satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
             opacity: 1.0,
-            attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+            attribution: 'Tiles &copy; Esri',
             minZoom: 1,
             maxZoom: 28,
             minNativeZoom: 0,
             maxNativeZoom: 18
         });
-        // --- FIN MODIFICATION ---
+        // -----------------------
 
         function removeEmptyRowsFromPopupContent(content, feature) {
          var tempDiv = document.createElement('div');
@@ -333,4 +332,214 @@ html, body {
                     break;
                 case 'Secondaire':
                     return {
-                pane: 'pane_Hydro
+                pane: 'pane_Hydrographie_1',
+                opacity: 1,
+                color: 'rgba(10,89,248,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Hydrographie_1');
+        map.getPane('pane_Hydrographie_1').style.zIndex = 401;
+        map.getPane('pane_Hydrographie_1').style['mix-blend-mode'] = 'normal';
+        var layer_Hydrographie_1 = new L.geoJson(json_Hydrographie_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Hydrographie_1',
+            layerName: 'layer_Hydrographie_1',
+            pane: 'pane_Hydrographie_1',
+            onEachFeature: pop_Hydrographie_1,
+            style: style_Hydrographie_1_0,
+        });
+        bounds_group.addLayer(layer_Hydrographie_1);
+        map.addLayer(layer_Hydrographie_1);
+        function pop_Route_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DESCRIPTIO'] !== null ? autolinker.link(String(feature.properties['DESCRIPTIO'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Route_2_0(feature) {
+            switch(String(feature.properties['DESCRIPTIO'])) {
+                case 'Route publique principale':
+                    return {
+                pane: 'pane_Route_2',
+                opacity: 1,
+                color: 'rgba(247,14,6,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 2.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Piste':
+                    return {
+                pane: 'pane_Route_2',
+                opacity: 1,
+                color: 'rgba(247,14,6,1.0)',
+                dashArray: '4.0,2.0',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Route_2');
+        map.getPane('pane_Route_2').style.zIndex = 402;
+        map.getPane('pane_Route_2').style['mix-blend-mode'] = 'normal';
+        var layer_Route_2 = new L.geoJson(json_Route_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Route_2',
+            layerName: 'layer_Route_2',
+            pane: 'pane_Route_2',
+            onEachFeature: pop_Route_2,
+            style: style_Route_2_0,
+        });
+        bounds_group.addLayer(layer_Route_2);
+        map.addLayer(layer_Route_2);
+        function pop_Localit_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Toponyme</th>\
+                        <td>' + (feature.properties['Toponyme'] !== null ? autolinker.link(String(feature.properties['Toponyme'])) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Localit_3_0(feature) {
+            switch(String(feature.properties['Type'])) {
+                case 'Chef-lieu de district':
+                    return {
+                pane: 'pane_Localit_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(4,4,4,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Autre localité':
+                    return {
+                pane: 'pane_Localit_3',
+                radius: 2.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(0,0,0,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Localit_3');
+        map.getPane('pane_Localit_3').style.zIndex = 403;
+        map.getPane('pane_Localit_3').style['mix-blend-mode'] = 'normal';
+        var layer_Localit_3 = new L.geoJson(json_Localit_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Localit_3',
+            layerName: 'layer_Localit_3',
+            pane: 'pane_Localit_3',
+            onEachFeature: pop_Localit_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Localit_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Localit_3);
+        map.addLayer(layer_Localit_3);
+        map.addControl(new L.Control.Photon({
+        url: "https://nominatim.openstreetmap.org/search?format=geojson&addressdetails=1&",
+        position: 'topleft',
+        includePosition: true,
+        }));
+        
+        // --- GESTION DU MENU ---
+        var baseMaps = {
+            "OpenStreetMap": layer_OSM,
+            "Satellite": layer_Satellite
+        };
+        var overlaysTree = [
+            {label: 'Localité<br /><table><tr><td style="text-align: center;"><img src="legend/Localit_3_Cheflieudedistrict0.png" /></td><td>Chef-lieu de district</td></tr><tr><td style="text-align: center;"><img src="legend/Localit_3_Autrelocalit1.png" /></td><td>Autre localité</td></tr></table>', layer: layer_Localit_3},
+            {label: 'Route<br /><table><tr><td style="text-align: center;"><img src="legend/Route_2_Routepubliqueprincipale0.png" /></td><td>Route publique principale</td></tr><tr><td style="text-align: center;"><img src="legend/Route_2_Piste1.png" /></td><td>Piste</td></tr></table>', layer: layer_Route_2},
+            {label: 'Hydrographie<br /><table><tr><td style="text-align: center;"><img src="legend/Hydrographie_1_Principal0.png" /></td><td>Principal</td></tr><tr><td style="text-align: center;"><img src="legend/Hydrographie_1_Secondaire1.png" /></td><td>Secondaire</td></tr></table>', layer: layer_Hydrographie_1},
+            {label: 'Occupation du Sol<br /><table><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_Forêtdense0.png" /></td><td>Forêt dense</td></tr><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_Forêtclaire1.png" /></td><td>Forêt claire</td></tr><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_Savanearboréedense2.png" /></td><td>Savane arborée dense</td></tr><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_Savanearboréedemoyennedensité3.png" /></td><td>Savane arborée de moyenne densité</td></tr><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_Savanearboréedefaibledensité4.png" /></td><td>Savane arborée de faible densité</td></tr><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_Savaneherbeuseouarbustivedense5.png" /></td><td>Savane herbeuse ou arbustive, dense</td></tr><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_Savaneherbeuseouarbustive6.png" /></td><td>Savane herbeuse ou arbustive</td></tr><tr><td style="text-align: center;"><img src="legend/OccupationduSol_0_MosaïqueSavaneherbeuseouarbustiveetchamps7.png" /></td><td>Mosaïque Savane herbeuse ou arbustive et champs</td></tr></table>', layer: layer_OccupationduSol_0},]
+        var lay = L.control.layers.tree(baseMaps, overlaysTree, {
+            collapsed: false, 
+        });
+        lay.addTo(map);
+        setBounds();
+        var i = 0;
+        layer_Localit_3.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['Toponyme'] !== null?String('<div style="color: #323232; font-size: 9pt; font-weight: bold; font-family: \'Open Sans\', sans-serif;">' + layer.feature.properties['Toponyme']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_Localit_3'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        map.addControl(new L.Control.Search({
+            layer: layer_OccupationduSol_0,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'Type'}));
+        if (typeof url === 'undefined') {
+            document.getElementsByClassName('search-button')[0].className += ' fa fa-binoculars';
+        } else {
+            document.getElementsByClassName('search-button')[1].className += ' fa fa-binoculars';
+        }
+        resetLabels([layer_Localit_3]);
+        map.on("zoomend", function(){
+            resetLabels([layer_Localit_3]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_Localit_3]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_Localit_3]);
+        });
+        </script>
+    </body>
+</html>
